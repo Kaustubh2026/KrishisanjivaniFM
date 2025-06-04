@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <div id="google_translate_element"></div>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- from node_modules -->
+  <script src="node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
+  <!-- from cdn -->
+  <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+  <!-- Material Icons Link -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!-- Font Awesome Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+    crossorigin="anonymous" />
+  <!-- stylesheet -->
+  <link rel="stylesheet" href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css" />
+  <!-- script -->
+  <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/script-name.js"></script>
+  <title>Merchant Dashboard - KrishiSanjivani</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --primary-dark: #45a049;
+      --secondary-color: #FFD700;
+      --text-primary: #2D3748;
+      --text-secondary: #718096;
+      --background-light: #F7FAFC;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--background-light);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .content-wrapper {
+      flex: 1;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 2rem;
+      padding-bottom: 4rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .dashboard-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .dashboard-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary-color);
+      border-radius: 2px;
+      animation: slideIn 0.6s ease-out;
+    }
+
+    .price-prediction-card {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .price-prediction-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .select-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #E2E8F0;
+      border-radius: 8px;
+      background: white;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .select-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+      outline: none;
+    }
+
+    .bid-history {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) #E2E8F0;
+    }
+
+    .bid-history::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .bid-history::-webkit-scrollbar-track {
+      background: #F7FAFC;
+      border-radius: 3px;
+    }
+
+    .bid-history::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 3px;
+    }
+
+    .transaction-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 12px 0;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      animation: fadeIn 0.4s ease-out;
+      border: 1px solid #E2E8F0;
+    }
+
+    .transaction-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-color);
+    }
+
+    .action-button {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .action-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .action-button:active {
+      transform: translateY(0);
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .loading-shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 1000px 100%;
+      animation: shimmer 2s infinite linear;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      margin: 5% auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .trend-up {
+      background: rgba(76, 175, 80, 0.1);
+      color: var(--primary-color);
+    }
+
+    .trend-down {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+
+    .trend-stable {
+      background: rgba(156, 163, 175, 0.1);
+      color: #6B7280;
+    }
+
+    @media (max-width: 768px) {
+      .content-wrapper {
+        padding: 1rem;
+      }
+
+      .dashboard-title {
+        font-size: 2rem;
+      }
+
+      .price-prediction-card,
+      .stats-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50">
+    <button id="google_translate_button"
+        class="fixed right-4 top-20 bg-green-800 text-white p-2 rounded-full shadow-md hover:bg-green-700 z-50">
+        <i class="fas fa-globe"></i>
+    </button>
+
+    <!-- Modal for Google Translate -->
+    <div id="google_translate_modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+  <s-header></s-header>
+   <script src="./customreusable.js"></script>
+   
+   <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+
+    document.getElementById('google_translate_button').addEventListener('click', function () {
+        var modal = document.getElementById('google_translate_modal');
+        modal.style.display = "block";
+    });
+
+    document.getElementsByClassName('close')[0].addEventListener('click', function () {
+        var modal = document.getElementById('google_translate_modal');
+        modal.style.display = "none";
+    });
+
+    window.onclick = function (event) {
+        var modal = document.getElementById('google_translate_modal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <div class="content-wrapper">
+    <h1 class="dashboard-title">Merchant Dashboard</h1>
+
+    <!-- Price Prediction Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="price-prediction-card">
+            <h2 class="text-xl font-semibold mb-4">Price Predictions</h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Select Commodity</label>
+                <select id="commoditySelect" class="select-input">
+                    <option value="">Select a commodity</option>
+                    <option value="rice">Rice</option>
+                    <option value="wheat">Wheat</option>
+                    <option value="sugar">Sugar</option>
+                    <option value="pulses">Pulses</option>
+                </select>
+            </div>
+            <div id="predictionResult" class="mt-4">
+                <!-- Prediction results will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Buffer Stock Information -->
+        <div class="stats-card">
+            <h2 class="text-xl font-semibold mb-4">Buffer Stock Status</h2>
+            <div id="bufferStockInfo">
+                <!-- Buffer stock information will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bidding Section -->
+    <div class="stats-card mb-8">
+        <h2 class="text-xl font-semibold mb-4">Active Bids</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Commodity</label>
+                <select id="bidCommodity" class="select-input">
+                    <option value="">Select commodity</option>
+                    <option value="rice">Rice</option>
+                    <option value="wheat">Wheat</option>
+                    <option value="sugar">Sugar</option>
+                    <option value="pulses">Pulses</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Quantity (kg)</label>
+                <input type="number" id="bidQuantity" class="select-input" min="1">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Your Bid (₹/kg)</label>
+                <input type="number" id="bidAmount" class="select-input" min="0" step="0.01">
+            </div>
+            <div class="flex items-end">
+                <button onclick="placeBid()" class="action-button">
+                    <i class="fas fa-gavel mr-2"></i>
+                    Place Bid
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="stats-card">
+        <h2 class="text-xl font-semibold mb-4">Transaction History</h2>
+        <div class="bid-history">
+            <div class="transaction-card">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-semibold">Rice Purchase</h3>
+                        <p class="text-sm text-gray-600">Quantity: 1000 kg</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold">₹45,000</p>
+                        <p class="text-sm text-gray-600">₹45/kg</p>
+                    </div>
+                </div>
+            </div>
+            <!-- More transaction cards will be added dynamically -->
+        </div>
+    </div>
+</div>
+<s-footer></s-footer>
+<script>
+    // Price Prediction Function
+    function getPricePrediction() {
+        const commodity = document.getElementById('commoditySelect').value;
+        if (!commodity) return;
+
+        const predictions = {
+            rice: { min: 42, max: 48, trend: 'up' },
+            wheat: { min: 38, max: 43, trend: 'stable' },
+            sugar: { min: 35, max: 40, trend: 'down' },
+            pulses: { min: 80, max: 90, trend: 'up' }
+        };
+
+        const prediction = predictions[commodity];
+        const resultDiv = document.getElementById('predictionResult');
+        const trendClass = `trend-${prediction.trend}`;
+        
+        resultDiv.innerHTML = `
+            <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+                <p class="font-semibold mb-2">Price Range: ₹${prediction.min} - ₹${prediction.max}/kg</p>
+                <span class="trend-indicator ${trendClass}">
+                    <i class="fas fa-${prediction.trend === 'up' ? 'arrow-up' : prediction.trend === 'down' ? 'arrow-down' : 'equals'} mr-1"></i>
+                    ${prediction.trend.charAt(0).toUpperCase() + prediction.trend.slice(1)}
+                </span>
+            </div>
+        `;
+    }
+
+    // Buffer Stock Information
+    function updateBufferStock() {
+        const bufferInfo = document.getElementById('bufferStockInfo');
+        bufferInfo.innerHTML = `
+            <div class="space-y-4">
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-medium">Rice</span>
+                    <span class="font-semibold text-primary">2.5M tons</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-medium">Wheat</span>
+                    <span class="font-semibold text-primary">1.8M tons</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-medium">Sugar</span>
+                    <span class="font-semibold text-primary">1.2M tons</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // Place Bid Function
+    function placeBid() {
+        const commodity = document.getElementById('bidCommodity').value;
+        const quantity = document.getElementById('bidQuantity').value;
+        const amount = document.getElementById('bidAmount').value;
+
+        if (!commodity || !quantity || !amount) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        const bidHistory = document.querySelector('.bid-history');
+        const newBid = document.createElement('div');
+        newBid.className = 'transaction-card';
+        newBid.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-semibold">${commodity.charAt(0).toUpperCase() + commodity.slice(1)} Bid</h3>
+                    <p class="text-sm text-gray-600">Quantity: ${quantity} kg</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold">₹${(quantity * amount).toFixed(2)}</p>
+                    <p class="text-sm text-gray-600">₹${amount}/kg</p>
+                </div>
+            </div>
+        `;
+        bidHistory.insertBefore(newBid, bidHistory.firstChild);
+
+        // Clear form
+        document.getElementById('bidCommodity').value = '';
+        document.getElementById('bidQuantity').value = '';
+        document.getElementById('bidAmount').value = '';
+    }
+
+    // Initialize
+    document.getElementById('commoditySelect').addEventListener('change', getPricePrediction);
+    updateBufferStock();
+
+    // Add loading animation
+    function showLoading(element) {
+        element.classList.add('loading-shimmer');
+    }
+
+    function hideLoading(element) {
+        element.classList.remove('loading-shimmer');
+    }
+</script>
+</body>
+
+</html>

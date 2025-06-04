@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmer Dashboard - KrishiSanjivani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      :root {
+        --primary-color: #4CAF50;
+        --primary-dark: #45a049;
+        --secondary-color: #FFD700;
+        --text-primary: #2D3748;
+        --text-secondary: #718096;
+        --background-light: #F7FAFC;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes slideIn {
+        from { transform: translateX(-20px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--background-light);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+      }
+
+      .content-wrapper {
+        flex: 1;
+        margin: 0 auto;
+        max-width: 1200px;
+        padding: 2rem;
+        padding-bottom: 4rem;
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .dashboard-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+        animation: slideIn 0.6s ease-out;
+      }
+
+      .price-prediction-card {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin: 16px 0;
+        box-shadow: var(--shadow-lg);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .price-prediction-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+
+      .select-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #E2E8F0;
+        border-radius: 8px;
+        background: white;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .select-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        outline: none;
+      }
+
+      .supply-history {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 16px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) #E2E8F0;
+      }
+
+      .supply-history::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .supply-history::-webkit-scrollbar-track {
+        background: #F7FAFC;
+        border-radius: 3px;
+      }
+
+      .supply-history::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      .transaction-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 12px 0;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.4s ease-out;
+        border: 1px solid #E2E8F0;
+      }
+
+      .transaction-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+      }
+
+      .action-button {
+        background: var(--primary-color);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .action-button:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .action-button:active {
+        transform: translateY(0);
+      }
+
+      .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .msp-badge {
+        background: var(--secondary-color);
+        color: var(--text-primary);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        animation: pulse 2s infinite;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        width: 90%;
+        max-width: 500px;
+        margin: 5% auto;
+        box-shadow: var(--shadow-lg);
+        animation: slideIn 0.4s ease-out;
+      }
+
+      .trend-indicator {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .trend-up {
+        background: rgba(76, 175, 80, 0.1);
+        color: var(--primary-color);
+      }
+
+      .trend-down {
+        background: rgba(239, 68, 68, 0.1);
+        color: #EF4444;
+      }
+
+      .trend-stable {
+        background: rgba(156, 163, 175, 0.1);
+        color: #6B7280;
+      }
+
+      .loading-shimmer {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 1000px 100%;
+        animation: shimmer 2s infinite linear;
+      }
+
+      @media (max-width: 768px) {
+        .content-wrapper {
+          padding: 1rem;
+        }
+
+        .dashboard-title {
+          font-size: 2rem;
+        }
+
+        .price-prediction-card,
+        .stats-card {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <s-header></s-header>
+    <script src="./customreusable.js"></script>
+
+    <div class="content-wrapper">
+      <h1 class="dashboard-title">Farmer Dashboard</h1>
+
+      <!-- Price Prediction and MSP Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="price-prediction-card">
+          <h2 class="text-xl font-semibold mb-4">Price Predictions & MSP</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">Select Commodity</label>
+            <select id="commoditySelect" class="select-input">
+              <option value="">Select a commodity</option>
+              <option value="rice">Rice</option>
+              <option value="wheat">Wheat</option>
+              <option value="sugar">Sugar</option>
+              <option value="pulses">Pulses</option>
+            </select>
+          </div>
+          <div id="predictionResult" class="mt-4">
+            <!-- Prediction results will be displayed here -->
+          </div>
+        </div>
+
+        <!-- Market Status -->
+        <div class="stats-card">
+          <h2 class="text-xl font-semibold mb-4">Market Status</h2>
+          <div id="marketStatus">
+            <!-- Market status information will be displayed here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Supply Management Section -->
+      <div class="stats-card mb-8">
+        <h2 class="text-xl font-semibold mb-4">Supply Management</h2>
+        <form id="supplyForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Commodity</label>
+            <select id="supplyCommodity" class="select-input" required>
+              <option value="">Select commodity</option>
+              <option value="rice">Rice</option>
+              <option value="wheat">Wheat</option>
+              <option value="sugar">Sugar</option>
+              <option value="pulses">Pulses</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Quantity (kg)</label>
+            <input type="number" id="supplyQuantity" class="select-input" min="1" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Expected Price (₹/kg)</label>
+            <input type="number" id="expectedPrice" class="select-input" min="0" step="0.01" required>
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="action-button">
+              <i class="fas fa-key mr-2"></i>
+              Generate OTP
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Supply History -->
+      <div class="stats-card">
+        <h2 class="text-xl font-semibold mb-4">Supply History</h2>
+        <div class="supply-history">
+          <div class="transaction-card">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="font-semibold">Rice Supply</h3>
+                <p class="text-sm text-gray-600">Quantity: 1000 kg</p>
+                <span class="msp-badge">
+                  <i class="fas fa-shield-alt mr-1"></i>
+                  MSP: ₹40/kg
+                </span>
+              </div>
+              <div class="text-right">
+                <p class="font-semibold">₹45,000</p>
+                <p class="text-sm text-gray-600">₹45/kg</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div id="otpModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="text-xl font-semibold mb-4">OTP Verification</h2>
+        <div id="otpContent" class="text-center">
+          <p class="text-lg mb-4">Your OTP is: <span id="otpNumber" class="font-bold"></span></p>
+          <p class="text-sm text-gray-600">Please share this OTP with the merchant to complete the transaction.</p>
+        </div>
+      </div>
+    </div>
+
+    <s-footer></s-footer>
+
+    <script>
+      // Price Prediction and MSP Function
+      function getPricePrediction() {
+        const commodity = document.getElementById('commoditySelect').value;
+        if (!commodity) return;
+
+        const predictions = {
+          rice: { min: 42, max: 48, trend: 'up', msp: 40 },
+          wheat: { min: 38, max: 43, trend: 'stable', msp: 35 },
+          sugar: { min: 35, max: 40, trend: 'down', msp: 32 },
+          pulses: { min: 80, max: 90, trend: 'up', msp: 75 }
+        };
+
+        const prediction = predictions[commodity];
+        const resultDiv = document.getElementById('predictionResult');
+        const trendClass = `trend-${prediction.trend}`;
+        
+        resultDiv.innerHTML = `
+          <div class="bg-white bg-opacity-20 p-4 rounded-lg">
+            <p class="font-semibold mb-2">Price Range: ₹${prediction.min} - ₹${prediction.max}/kg</p>
+            <div class="flex items-center gap-2">
+              <span class="trend-indicator ${trendClass}">
+                <i class="fas fa-${prediction.trend === 'up' ? 'arrow-up' : prediction.trend === 'down' ? 'arrow-down' : 'equals'} mr-1"></i>
+                ${prediction.trend.charAt(0).toUpperCase() + prediction.trend.slice(1)}
+              </span>
+              <span class="msp-badge">
+                <i class="fas fa-shield-alt mr-1"></i>
+                MSP: ₹${prediction.msp}/kg
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
+      // Market Status Function
+      function updateMarketStatus() {
+        const marketStatus = document.getElementById('marketStatus');
+        marketStatus.innerHTML = `
+          <div class="space-y-4">
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium">Market Demand</span>
+              <span class="font-semibold text-green-600">High</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium">Buffer Stock</span>
+              <span class="font-semibold text-primary">2.5M tons</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium">Active Merchants</span>
+              <span class="font-semibold text-primary">15</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // Supply Form Submission
+      document.getElementById('supplyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const commodity = document.getElementById('supplyCommodity').value;
+        const quantity = document.getElementById('supplyQuantity').value;
+        const expectedPrice = document.getElementById('expectedPrice').value;
+
+        if (!commodity || !quantity || !expectedPrice) {
+          alert('Please fill all fields');
+          return;
+        }
+
+        // Generate OTP (simulated)
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('otpNumber').textContent = otp;
+        document.getElementById('otpModal').style.display = 'flex';
+
+        // Add to supply history
+        const supplyHistory = document.querySelector('.supply-history');
+        const newSupply = document.createElement('div');
+        newSupply.className = 'transaction-card';
+        newSupply.innerHTML = `
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-semibold">${commodity.charAt(0).toUpperCase() + commodity.slice(1)} Supply</h3>
+              <p class="text-sm text-gray-600">Quantity: ${quantity} kg</p>
+              <span class="msp-badge">
+                <i class="fas fa-shield-alt mr-1"></i>
+                MSP: ₹${predictions[commodity].msp}/kg
+              </span>
+            </div>
+            <div class="text-right">
+              <p class="font-semibold">₹${(quantity * expectedPrice).toFixed(2)}</p>
+              <p class="text-sm text-gray-600">₹${expectedPrice}/kg</p>
+            </div>
+          </div>
+        `;
+        supplyHistory.insertBefore(newSupply, supplyHistory.firstChild);
+
+        // Clear form
+        this.reset();
+      });
+
+      // Modal functionality
+      const modal = document.getElementById('otpModal');
+      const span = document.getElementsByClassName('close')[0];
+
+      span.onclick = function() {
+        modal.style.display = 'none';
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
+
+      // Initialize
+      document.getElementById('commoditySelect').addEventListener('change', getPricePrediction);
+      updateMarketStatus();
+
+      // Add loading animation
+      function showLoading(element) {
+        element.classList.add('loading-shimmer');
+      }
+
+      function hideLoading(element) {
+        element.classList.remove('loading-shimmer');
+      }
+    </script>
+  </body>
+</html>
